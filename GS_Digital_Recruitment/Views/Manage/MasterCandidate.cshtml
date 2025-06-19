@@ -1,0 +1,776 @@
+@using GS_Digital_Recruitment.Models
+@{
+    ViewBag.Title = "Profile";
+    var logSession = HttpContext.Current.Session["SHealth"] as SessionLogin;
+
+}
+
+<div class="container">
+    <div class="ps-5 pe-5 mb-5 py-3">
+
+
+
+
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <img src="~/Content/assets/images/users/user-1.jpg"
+                 alt="Profile"  
+                 class="rounded-circle me-2"
+                 style="width: 128px; height: 128px; object-fit: cover;">
+            <h3 class="display-5 fw-bold ms-3">Complete Your Profile</h3>
+        </div>
+        <div class="px-3 py-2 bg-info-subtle border-start border-5 border-info mb-3 fw-lighter fst-italic">
+            <small>
+                Please fill in your profile data according to your identity
+                card
+            </small>
+        </div>
+        @(Html.DevExtreme().Form()
+        .ID("formInputSchedule")
+        .ColCount(2)
+        .ScrollingEnabled(true)
+        .LabelLocation(FormLabelLocation.Top)
+        .MinColWidth(300)
+        .ReadOnly(false)
+        .ShowColonAfterLabel(false)
+        .Items(items =>
+        {
+            items.AddSimple().Label(label => label.Text("ID Number")).IsRequired(true).Editor(e => e
+                .TextBox()
+                .Placeholder("Enter your ID number (NIK)")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("log_period")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Full Name")).IsRequired(true).Editor(e => e
+                .TextBox()
+                .Placeholder("Enter your legal full name")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("log_period")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Religion")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("class", "form-select")
+                .SearchEnabled(true)
+                .ID("cust_id")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Gender")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("class", "form-select")
+                .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                .DisplayExpr("customer_name")
+                .ValueExpr("customer_id")
+                .SearchEnabled(true)
+                .ID("cust_id")).ColSpan(1);
+
+
+            items.AddSimple().Label(label => label.Text("Birth Place")).IsRequired(true).Editor(e => e
+                .TextBox()
+                .Placeholder("Enter your birth place")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("log_period")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Birth Date")).IsRequired(true).Editor(e => e
+                .DateBox()
+                .DisplayFormat("dd MMM yyyy")
+                .CalendarOptions(c => c.MaxZoomLevel(CalendarZoomLevel.Month).MinZoomLevel(CalendarZoomLevel.Century))
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("log_period")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Email")).IsRequired(true).Editor(e => e
+                .TextBox()
+                .Placeholder("Enter your active email")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("log_period")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Phone Number")).Editor(e => e
+                .NumberBox()
+                .Placeholder("Enter your active phone number")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("unit_price")).ColSpan(1);
+
+            items.AddSimple().Label(label => label.Text("Provinces")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("id", "cust_id") // set static ID
+                .SearchEnabled(true)
+                .DisplayExpr("name")
+                .ValueExpr("code")
+                .DataSource(new JS("provinceDataSource")) // use JS object for remote loading
+            ).ColSpan(2);
+
+            items.AddSimple().Label(label => label.Text("Regencies")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("class", "form-select")
+                .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                .DisplayExpr("customer_name")
+                .ValueExpr("customer_id")
+                .SearchEnabled(true)
+                .ID("cust_id")).ColSpan(2);
+
+            items.AddSimple().Label(label => label.Text("Districts")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("class", "form-select")
+                .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                .DisplayExpr("customer_name")
+                .ValueExpr("customer_id")
+                .SearchEnabled(true)
+                .ID("cust_id")).ColSpan(2);
+
+            items.AddSimple().Label(label => label.Text("Villages")).IsRequired(true).Editor(e => e
+                .SelectBox()
+                .ElementAttr("class", "form-select")
+                .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                .DisplayExpr("customer_name")
+                .ValueExpr("customer_id")
+                .SearchEnabled(true)
+                .ID("cust_id")).ColSpan(2);
+
+            items.AddSimple().Label(label => label.Text("Address Detail")).Editor(e => e
+                .TextArea()
+                .Placeholder("Enter your specified address")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("unit_price")).ColSpan(2);
+
+            items.AddSimple()
+                .Label(label => label.Text(""))
+                .Editor(e => e
+                    .CheckBox()
+                    .Text("I currently live at the same address as stated on my Identity Card")
+                    .Value(false)
+                    .OnValueChanged("onCurrentAddressToggle") // JavaScript function
+                    .ID("sameAddressCheckbox")
+                ).ColSpan(2);
+
+            items.AddGroup()
+                .Name("currentAddressGroup")
+                .Visible(true) // hidden by default
+                .ColCount(1)
+                .Items(address =>
+                {
+                    address.AddSimple().Label(label => label.Text("Provinces")).IsRequired(true).Editor(e => e
+                        .SelectBox()
+                        .ElementAttr("class", "form-select")
+                        .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                        .DisplayExpr("customer_name")
+                        .ValueExpr("customer_id")
+                        .SearchEnabled(true)
+                        .ID("curr_province")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Regencies")).IsRequired(true).Editor(e => e
+                        .SelectBox()
+                        .ElementAttr("class", "form-select")
+                        .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                        .DisplayExpr("customer_name")
+                        .ValueExpr("customer_id")
+                        .SearchEnabled(true)
+                        .ID("curr_regency")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Districts")).IsRequired(true).Editor(e => e
+                        .SelectBox()
+                        .ElementAttr("class", "form-select")
+                        .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                        .DisplayExpr("customer_name")
+                        .ValueExpr("customer_id")
+                        .SearchEnabled(true)
+                        .ID("curr_district")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Villages")).IsRequired(true).Editor(e => e
+                        .SelectBox()
+                        .ElementAttr("class", "form-select")
+                        .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                        .DisplayExpr("customer_name")
+                        .ValueExpr("customer_id")
+                        .SearchEnabled(true)
+                        .ID("curr_village")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Address Detail")).Editor(e => e
+                        .TextArea()
+                        .Placeholder("Enter your specified address")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("curr_detail")).ColSpan(1);
+                }).ColSpan(2);
+
+            items.AddSimple().Label(label => label.Text("About Me")).Editor(e => e
+                .TextArea()
+                .Placeholder("Describe yourself")
+                .ElementAttr("class", "form-control")
+                .ReadOnly(false)
+                .ID("unit_price")).ColSpan(2);
+
+            items.AddGroup()
+                .Name("sosmed")
+                .Visible(true)
+                .ColCount(3)
+                .Items(address =>
+                {
+                    address.AddSimple().Label(label => label.Text("Linked In")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active linked in link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Instagram")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active instagram link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("X/Twitter")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active twitter link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Tiktok")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active tiktok link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Youtube")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active youtube link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+
+                    address.AddSimple().Label(label => label.Text("Facebook")).IsRequired(false).Editor(e => e
+                        .TextBox()
+                        .Placeholder("Enter your active facebook link")
+                        .ElementAttr("class", "form-control")
+                        .ReadOnly(false)
+                        .ID("log_period")).ColSpan(1);
+                }).ColSpan(2);
+
+            items.AddGroup().ColCount(2).Items(groupItems =>
+            {
+                groupItems.AddButton()
+                    .Name("CANCEL")
+                    .Visible(true)
+                    .ButtonOptions(b => b
+                        .Text("Cancel")
+                        .Type(ButtonType.Normal)
+                        .UseSubmitBehavior(false)
+                        .OnClick("clickCanceled")
+                        .ElementAttr("class", "btn btn-outline-danger w-100 rounded-5 mt-3"))
+                    .ColSpan(1);
+
+                groupItems.AddButton()
+                    .Name("SAVE DATA")
+                    .Visible(true)
+                    .ButtonOptions(b => b
+                        .Text("Save")
+                        .ID("btn_save_data")
+                        .Type(ButtonType.Danger)
+                        .UseSubmitBehavior(false)
+                        .OnClick("clickSaveFormContinue")
+                        .ElementAttr("class", "btn btn-danger w-100 rounded-5 mt-3"))
+                    .ColSpan(1); // spans full width// spans full width
+            }).ColSpan(2);
+        })
+    )
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        function onCurrentAddressToggle(e) {
+            const formInstance = $("#formInputSchedule").dxForm("instance"); // match the Form ID
+            if (!formInstance) return;
+
+            const isChecked = e.value; // true if checked
+            formInstance.itemOption("currentAddressGroup", "visible", !isChecked);
+        }
+ 
+        function testing() {
+
+            let dataForm = document.getElementById("formInputSchedule");
+            let form = DevExpress.ui.dxForm.getInstance(dataForm);
+            form.option("items[0].items[1].editorOptions.value", "coba ni");
+            console.log(form.option("items[0].items[1]"));
+
+        }
+
+        $(document).ready(function () {
+
+            let dataPopUp = document.getElementById("form-scheduled");
+            let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+            popup.hide();
+
+        });
+
+        const provinceDataSource = new DevExpress.data.CustomStore({
+            loadMode: "raw",
+            load: function () {
+                return fetch("https://wilayah.id/api/provinces.json")
+                    .then(response => response.json())
+                    .then(data => data.data);
+            }
+        });
+
+        setTimeout(() => {
+            const provinceBox = $("#cust_id").dxSelectBox("instance");
+            provinceBox.option("dataSource", new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                load: function () {
+                    return fetch("https://wilayah.id/api/provinces.json")
+                        .then(response => response.json())
+                        .then(data => data.data);
+                }
+            }));
+            provinceBox.option("displayExpr", "name");
+            provinceBox.option("valueExpr", "code");
+        }, 500);
+
+        function selectionChangedCUST() {
+             let dataDDL = document.getElementById("cust_id");
+            let instanceDDL = DevExpress.ui.dxSelectBox.getInstance(dataDDL);
+            ////console.log(instanceDDL.option("value"));
+
+            @*var $link = '@Html.Raw(Url.Action("ListPartNumber", "api", new {bpid = "replaceroomid"}))';
+            $link = $link.replace("replaceroomid", encodeURIComponent(instanceDDL.option("value")));*@
+
+            var $link = '@Html.Raw(Url.Action("ListPartNumber/get-PN", "api", new {
+                cust_id = "replaceCustID"
+            }))';
+            $link = $link.replace("replaceCustID", encodeURIComponent(instanceDDL.option("value")));
+            $.ajax({
+                type: "GET",
+                url: $link,
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    if (response != null) {
+                        if (response.data.length > 0) {
+                            let dataSB = document.getElementById("part_number");
+                            let instanceSelectBox = DevExpress.ui.dxSelectBox.getInstance(dataSB);
+                            instanceSelectBox.option('dataSource', DevExpress.data.AspNet.createStore({
+                                key: "part_number",
+                                loadUrl: $link,
+                                insertUrl: $link,
+                                updateUrl: $link,
+                                deleteUrl: $link
+                            }));
+
+                            instanceSelectBox.repaint();
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+        function selectionChangedPN() {
+             let dataDDL = document.getElementById("part_number");
+            let instanceDDL = DevExpress.ui.dxSelectBox.getInstance(dataDDL);
+            ////console.log(instanceDDL.option("value"));
+
+            var $link = '@Html.Raw(Url.Action("ListPartNumber", "api", new {bpid = "replaceroomid"}))';
+            $link = $link.replace("replaceroomid", encodeURIComponent(instanceDDL.option("value")));
+            $.ajax({
+                type: "GET",
+                url: $link,
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    if (response != null) {
+                        if (response.data.length > 0) {
+                            var loadData = response.data[0];
+
+                            if (loadData != null) {
+                                console.log(loadData);
+                                var old_jis = loadData.PN_old_jis;
+                                var new_jis = loadData.PN_new_jis;
+                                var bat_seg = loadData.PN_batt_segmentation;
+
+                                //console.log(old_jis);
+                                //console.log(new_jis);
+
+                                let dataType = document.getElementById("old_jis");
+                                let instanceOLD = DevExpress.ui.dxTextBox.getInstance(dataType);
+                                instanceOLD.option("value", old_jis);
+
+                                let dataType2 = document.getElementById("new_jis");
+                                let instanceNEW = DevExpress.ui.dxTextBox.getInstance(dataType2);
+                                instanceNEW.option("value", new_jis);
+
+                                let dataType3 = document.getElementById("batt_segmentation");
+                                let instanceSEG = DevExpress.ui.dxTextBox.getInstance(dataType3);
+                                instanceSEG.option("value", bat_seg);
+                            }
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+        function functionShowPopupDelete(e) {
+            if (e.row.data != null) {
+                //console.log(e.row.data.id);
+                $("#temp_id").val(e.row.data.id);
+
+                let dataPopUp = document.getElementById("detail-popup");
+                let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+                popup.show();
+            }
+        }
+
+        function functionBtnDelete() {
+            var id = "";
+            id = $("#temp_id").val()
+            //console.log(id);
+
+            if (id != null) {
+
+                var $link = '@Html.Raw(Url.Action("PriceQuotation", "api", new { id = "replaceID" }))';
+                $link = $link.replace("replaceID", encodeURIComponent(id));
+            $.ajax({
+                type: "DELETE",
+                url: $link,
+                beforeSend: function () {
+                },
+                success: function (response) {
+                    if (response != null) {
+                        if (response.Message == "success") {
+                            DevExpress.ui.notify("Successfully deleted data!", "success", 600);
+                            refreshTableDevExpress();
+                        } else {
+                            DevExpress.ui.notify("Failed delete data!", "error", 600);
+                            refreshTableDevExpress();
+                        }
+                    }
+
+                    let dataPopUp = document.getElementById("detail-popup");
+                    let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+                    popup.hide();
+                },
+                error: function (xhr, status, error) {
+                    let dataPopUp = document.getElementById("detail-popup");
+                    let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+                    popup.hide();
+                    DevExpress.ui.notify(error, "error", 600);
+                }
+            });
+
+            }
+        }
+
+        function functionDownloadOrderByID(e) {
+            var $link = '@Html.Raw(Url.Action("DownloadQuotationBy_ID", "UploadFile", new { ID_ORDER = "replaceID" }))';
+            $link = $link.replace("replaceID", encodeURIComponent(e.row.key));
+            window.location.href = $link;
+        }
+
+        function printIframe()
+        {
+            var iframe = document.frames
+                ? document.frames['form-scheduled']
+                : document.getElementById('form-scheduled');
+            var ifWin = iframe.contentWindow || iframe;
+
+            iframe.focus();
+            ifWin.printPage();
+            return false;
+        }
+
+        function checkvalidNumber(instance) {
+            var iStatusValid = 0;
+            if (instance.option("value") == null) {
+                instance.option("validationStatus", "invalid");
+                iStatusValid = 1;
+            } else {
+                instance.option("validationStatus", "valid");
+            }
+            return iStatusValid;
+        }
+
+        function clickSaveFormContinue() {
+            var iStatusValid = 0;
+
+            let oldjis = document.getElementById("old_jis");
+            let instanceOldJIS = DevExpress.ui.dxTextBox.getInstance(oldjis);
+            iStatusValid += checkvalidNumber(instanceOldJIS);
+
+            let newjis = document.getElementById("new_jis");
+            let instanceNewJIS = DevExpress.ui.dxTextBox.getInstance(newjis);
+            iStatusValid += checkvalidNumber(instanceNewJIS);
+
+            let batseg = document.getElementById("batt_segmentation");
+            let instanceBattSegment = DevExpress.ui.dxTextBox.getInstance(batseg);
+            iStatusValid += checkvalidNumber(instanceBattSegment);
+
+            let customer = document.getElementById("cust_id");
+            let instanceCustomer = DevExpress.ui.dxSelectBox.getInstance(customer);
+            iStatusValid += checkvalidNumber(instanceCustomer);
+
+            let partnum = document.getElementById("part_number");
+            let instancePartNumber = DevExpress.ui.dxSelectBox.getInstance(partnum);
+            iStatusValid += checkvalidNumber(instancePartNumber);
+
+            let unpri = document.getElementById("unit_price");
+            let instanceUnitPrice = DevExpress.ui.dxNumberBox.getInstance(unpri);
+            iStatusValid += checkvalidNumber(instanceUnitPrice);
+
+            let logper = document.getElementById("log_period");
+            let instanceLogPeriod = DevExpress.ui.dxDateBox.getInstance(logper);
+
+            const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            //console.log(month[instanceLogPeriod.option("value").getMonth()]);
+            //console.log(instanceLogPeriod.option("value").getMonth()+1);
+            //console.log(instanceLogPeriod.option("value").getFullYear());
+            if (iStatusValid > 0) {
+                return DevExpress.ui.notify("Please fill the blank form!", "warning", 2000);
+            }
+
+            var $link = '@Html.Raw(Url.Action("LogPrice", "api"))';
+
+            ////console.log("HASIL WOOOY");
+            ////console.log(instanceLPPFee1.option("value"));
+
+            var dataForm = {
+                log_periode: month[instanceLogPeriod.option("value").getMonth()],
+                log_periode_int: instanceLogPeriod.option("value").getMonth() + 1,
+                log_year: instanceLogPeriod.option("value").getFullYear(),
+                cust_id: instanceCustomer.option("value"),
+                log_part_number: instancePartNumber.option("value"),
+                log_PN_old_jis: instanceOldJIS.option("value"),
+                log_PN_new_jis: instanceNewJIS.option("value"),
+                log_PN_batt_segmentation: instanceBattSegment.option("value"),
+                log_unit_price: instanceUnitPrice.option("value")
+            }
+            //console.log(dataForm);
+
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(dataForm),
+                contentType: 'application/json',
+                url: $link,
+                beforeSend: function () {
+                },
+                success: function (response) {
+                    //console.log(response);
+                    DevExpress.ui.notify(response.message, "success", 3000);
+                    let dataPopUp = document.getElementById("form-scheduled");
+                    let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+                    popup.hide();
+                    popup.repaint();
+
+                    let dataForm = document.getElementById("formInputSchedule");
+                    let instanceForm = DevExpress.ui.dxForm.getInstance(dataForm);
+                    instanceForm.repaint();
+
+                    if (response != null) {
+                        if (response.Message == "success") {
+                            DevExpress.ui.notify("Data berhasil disimpan!", "success", 3000);
+                            refreshTableDevExpress();
+                        } else {
+                            DevExpress.ui.notify(response.Message, "error", 3000);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    //console.log(error);
+                    //console.log(status);
+
+                    DevExpress.ui.notify(error, "error", 3000);
+                }
+            });
+        }
+
+
+        function clickPopup() {
+
+            let dataPopUp = document.getElementById("form-scheduled");
+            let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+            popup.show();
+        }
+
+        function clickCanceled() {
+            let dataPopUp = document.getElementById("form-scheduled");
+            let popup = DevExpress.ui.dxPopup.getInstance(dataPopUp);
+            popup.hide();
+        }
+
+        function exporting(e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('ItemPartNumber');
+
+            DevExpress.excelExporter.exportDataGrid({
+                component: e.component,
+                worksheet: worksheet,
+                autoFilterEnabled: true
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Download-ItemPartNumber.xlsx');
+                });
+            });
+            e.cancel = true;
+        }
+
+        function cell_numbering(cellElement, cellInfo) {
+            cellElement.text(cellInfo.rowIndex + 1);
+        }
+
+        function getFileUploaderInstance() {
+            return $("#file-uploader").dxFileUploader("instance");
+        }
+
+        function check_beforeupload(e) {
+            //let selectTahun = document.getElementById("select-years");
+            //let instanceSelectedTahun = DevExpress.ui.dxSelectBox.getInstance(selectTahun);
+            //var valueTahun = instanceSelectedTahun.option("value");
+
+            //if (valueTahun == null) {
+            //    e.request.abort();
+            //    DevExpress.ui.dialog.alert("Mohon untuk mengisi Tahun terlebih dahulu.", "Informasi");
+            //}
+        }
+
+        function onFilesUploaded(e) {
+            DevExpress.ui.dialog.alert("Proses Upload Selesai", "Informasi");
+            location.reload(true);
+        }
+
+        function fileUploader_valueChanged(e) {
+            var files = e.value;
+            if (files.length > 0) {
+                $("#selected-files .selected-item").remove();
+
+                $.each(files, function (i, file) {
+                    var $selectedItem = $("<div />").addClass("selected-item");
+                    $selectedItem.append(
+                        $("<span />").html("Name: " + file.name + "<br/>"),
+                        $("<span />").html("Size " + file.size + " bytes" + "<br/>"),
+                        $("<span />").html("Type " + file.type + "<br/>"),
+                        $("<span />").html("Last Modified Date: " + file.lastModifiedDate)
+                    );
+                    $selectedItem.appendTo($("#selected-files"));
+                });
+                $("#selected-files").show();
+            }
+            else
+                $("#selected-files").hide();
+        }
+
+        function acceptOption_changed(e) {
+            getFileUploaderInstance().option("accept", e.value);
+        }
+
+        function uploadMode_changed(e) {
+            getFileUploaderInstance().option("uploadMode", e.value);
+        }
+
+        function multipleOption_changed(e) {
+            getFileUploaderInstance().option("multiple", e.value);
+        }
+
+
+        let refreshButton;
+        let uploadButton;
+
+        function onToolbarPreparing(e) {
+            var dataGrid = e.component;
+
+            //e.toolbarOptions.items[0].showText = 'always';
+            //e.toolbarOptions.items.push({
+            //    location: "after",
+            //    widget: "dxButton",
+            //    options: {
+            //        text: "Upload Excel",
+            //        icon: "upload",
+            //        disabled: false,
+            //        onClick: onUploadBtnClick,
+            //        onInitialized: function (e) {
+            //            uploadButton = e.component;
+            //        }
+            //    }
+            //});
+
+            e.toolbarOptions.items[0].showText = 'always';
+            e.toolbarOptions.items.push({
+                location: "after",
+                widget: "dxButton",
+                options: {
+                    text: "Add",
+                    icon: "add",
+                    disabled: false,
+                    onClick: clickPopup,
+                    onInitialized: function (e) {
+                        refreshButton = e.component;
+                    }
+                }
+            });
+
+            e.toolbarOptions.items[1].showText = 'always';
+            e.toolbarOptions.items.push({
+                location: "after",
+                widget: "dxButton",
+                options: {
+                    text: "Refresh",
+                    icon: "refresh",
+                    disabled: false,
+                    onClick: onRefreshBtnClick,
+                    onInitialized: function (e) {
+                        refreshButton = e.component;
+                    }
+                }
+            });
+        }
+
+        function onUploadBtnClick() {
+            document.getElementById("btn-modal-show").click();
+        }
+
+        function onRefreshBtnClick() {
+            //location.reload(true);
+            refreshTableDevExpress();
+        }
+
+        function refreshTableDevExpress() {
+            let dataGrid = document.getElementById("gridContainer");
+            let instanceDataGrid = DevExpress.ui.dxDataGrid.getInstance(dataGrid);
+            var $link = '@Html.Raw(Url.Action("LogPrice", "api"))';
+
+             instanceDataGrid.option('dataSource', DevExpress.data.AspNet.createStore({
+                 key: "id",
+                 loadUrl: $link,
+                 insertUrl: $link,
+                 updateUrl: $link,
+                 deleteUrl: $link
+             }));
+
+             instanceDataGrid.refresh();
+        }
+
+        function onDeleteBtnClick() {
+            //let dataGrid = $("#gridContainer").dxDataGrid("instance");
+            //$.when.apply($, dataGrid.getSelectedRowsData().map(function (data) {
+            //    return dataGrid.getDataSource().store().remove(data.ID);
+            //})).done(function () {
+            //    dataGrid.refresh();
+            //});
+        }
+
+        function onSelectionChanged(data) {
+            //refreshButton.option("disabled", !data.selectedRowsData.length);
+        }
+
+    </script>
+
+}

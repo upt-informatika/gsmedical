@@ -1,0 +1,687 @@
+﻿@using GS_Digital_Recruitment.Models
+@{
+    ViewBag.Title = "Manage Master User Recruiter";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+        vertical-align: middle;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #E74C3C;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+
+    textarea, input {
+        /*min-inline-size: -moz-available, -webkit-fill-available;*/
+        min-inline-size: -webkit-fill-available;
+    }
+
+    .widget-container {
+        margin-right: 320px;
+    }
+
+    .content h4 {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 18px;
+    }
+
+    .content {
+        margin-top: 50px;
+        margin-left: 10px;
+    }
+
+    .selected-item {
+        margin-bottom: 20px;
+    }
+
+    .selected-patient {
+        cursor: pointer;
+    }
+
+    #selected-files {
+        display: none;
+    }
+
+    .options {
+        padding: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 260px;
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        margin-top: 10px;
+    }
+    .shadow-soft {
+        box-shadow: 5px 5px 5px rgba(217, 70, 53, 0.3);
+    }
+
+    .dx-datagrid {
+        border-radius: 0px;
+        padding: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .dx-datagrid-headers {
+        font-weight: 600;
+        color:#000000;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        background-color: #fafafa;
+    }
+
+    .dx-datagrid .dx-command-edit .dx-link {
+        display: none; /* hide default edit icons */
+    }
+
+    .dx-datagrid-rowsview .column_class {
+        text-align: left !important;
+    }
+
+    .dx-datagrid-rowsview .column_class_readonly {
+        text-align: left !important;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .dx-datagrid-rowsview .column_class_price {
+        text-align: right !important;
+    }
+
+    .horizontal-scrollable > .row {
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+        .horizontal-scrollable > .row > .col-4 {
+            display: inline-block;
+        }
+
+    .wrapper1 {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .topScrollTableLength {
+        display: block;
+    }
+
+    .dx-datagrid-rowsview .column_class {
+        text-align: left !important;
+    }
+
+    .custom-save-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .custom-cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .custom-add-btn {
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    .custom-toolbar-button .dx-button {
+        background-color: #D94635 !important;
+        color: white !important;
+        border-radius: 10px !important;
+        border: none !important;
+    }
+
+        .custom-toolbar-button .dx-button .dx-icon {
+            color: white !important;
+        }
+
+        .custom-toolbar-button .dx-button .dx-button-text {
+            color: white !important;
+        }
+
+
+
+    .dx-popup .dx-toolbar .dx-link-save {
+        background-color: #28a745;
+        color: white;
+        border-radius: 4px;
+        padding: 5px 15px;
+    }
+
+    .dx-popup .dx-toolbar .dx-link-cancel {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 4px;
+        padding: 5px 15px;
+    }
+
+
+    .filter-bar {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 30px 10px 30px 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    }
+
+
+    .filter-bar input,
+    .filter-bar select {
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 100%
+    }
+
+    /* Optional: Responsive fallback */
+    @@media (max-width: 768px) {
+        .filter-bar {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .filter-bar {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        height: 130px;
+        display: flex;
+        background: white;
+    }
+
+        .card.orange {
+            background: linear-gradient(135deg, #FFA726, #FFCC80); /* Orange Gradient */
+        }
+
+        .card.green {
+            background: linear-gradient(135deg, #36C8E7, #5DEAF4); /* Green Gradient */
+        }
+
+        .card.red {
+            background: linear-gradient(135deg, #EF5350, #E57373); /* Red Gradient */
+        }
+
+        .card.purple {
+            background: linear-gradient(135deg, #BA68C8, #CE93D8); /* Purple Gradient */
+        }
+
+    .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        color: white;
+    }
+
+    .title {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.2;
+    }
+
+    .number {
+        font-size: 32px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .card-icon {
+        position: absolute;
+        bottom: 10px;
+        right: -20px;
+        width: auto;
+        height: 100%;
+        opacity: 0.9;
+    }
+
+
+
+
+</style>
+
+<div class="content">
+    <div class="filter-bar">
+        <div>
+            <p class="text-secondary mb-0" style="font-size: 15px;">Mulai Tanggal</p>
+            <input type="date" placeholder="Dari Tanggal" />
+        </div>
+        <div>
+            <p class="text-secondary mb-0" style="font-size: 15px;">Sampai Tanggal</p>
+            <input type="date" placeholder="Sampai Tanggal" />
+        </div>
+        <div>
+            <p class="text-secondary mb-0" style="font-size: 15px;">Plant</p>
+            <select><option>Semua</option></select>
+        </div>
+        <div>
+            <p class="text-secondary mb-0" style="font-size: 15px;">Status</p>
+            <select><option>Semua</option></select>
+        </div>
+        <div>
+            <p class="text-secondary mb-0" style="font-size: 15px;">Jenis Jaminan</p>
+            <select><option>Semua</option></select>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="card orange">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Belum Di Proses</span>
+                    <span class="number">2181</span>
+                </div>
+                <img src="~/Content/assets/images/cards/pengajuanBelumDiProses.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+
+        <div class="card green">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Disetujui</span>
+                    <span class="number">1928</span>
+                </div>
+                <img src="~/Content/assets/images/cards/pengajuanDisetujui.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+
+        <div class="card red">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Ditolak</span>
+                    <span class="number">231</span>
+                </div>
+                <img src="~/Content/assets/images/cards/PengajuanDitolak.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+
+        <div class="card purple">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Jumlah Pengajuan</span>
+                    <span class="number">4340</span>
+                </div>
+                <img src="~/Content/assets/images/cards/totalPengajuan.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="container-fluid" style="padding-bottom:0px;">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-4">
+                    <div class="d-flex align-items-center gap-2" style="color: #D94635;">
+                        <i class="bi bi-person-workspace fa-lg"></i> <!-- cocok juga untuk recruiter/protection -->
+                        <h4 class="page-title">Manage User Recruiter</h4>
+                        @*                    <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="javascript:void(0);">Manage</a>
+                                </li>
+                                <li class="breadcrumb-item" active>
+                                    <a href="@Url.Action("ManageMasterUser", "Menu")"> Master User</a>
+                                </li>
+                            </ol>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <ul id="tablist2" class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" id="nav-view-listworkorder" data-toggle="tab" href="#view-listworkorder" onclick="refreshTableListWorkOrder()" role="tab">
+                                <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                <span class="d-none d-sm-block">List User</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="tab-content1">
+                        <div class="tab-pane p-3" id="view-listworkorder" role="tabpanel">
+                            <div class="">
+                                <div class="card-body shadow-soft">
+                                    @(Html.DevExtreme().DataGrid<MasterUserRecruiter>()
+    .ID("gridListUserRecruiter")
+    .ShowBorders(true)
+    .AllowColumnReordering(true)
+    .AllowColumnResizing(true)
+    .ColumnAutoWidth(true)
+    .ColumnFixing(c => c.Enabled(true))
+    .Scrolling(scrolling => scrolling.ColumnRenderingMode(GridColumnRenderingMode.Virtual))
+    .ShowColumnLines(true)
+    .RowAlternationEnabled(true)
+    .LoadPanel(lp => lp.Enabled(false))
+    .ColumnChooser(c => c.Enabled(true).Mode(GridColumnChooserMode.Select))
+    .DataSource(d => d.WebApi()
+        .Controller("ManageMasterUserRecruiter")
+        .Controller("ManageMasterUserRecruiter")
+        .DeleteAction(true)
+        .UpdateAction(true)
+        .InsertAction(true)
+        .Key("prk_id"))
+    .Columns(columns => {
+        columns.Add().Caption("No").AllowEditing(false).Width(80).FormItem(i => i.Visible(false)).CellTemplate(new JS("cell_numbering")).Alignment(HorizontalAlignment.Center);
+
+        columns.AddFor(m => m.prk_username).Caption("Username")
+        .AllowEditing(true)
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(true).Editor(e => e.TextBox().MaxLength(6).ReadOnly(false).Disabled(false)));
+
+        /*        columns.AddFor(m => m.prk_password).Caption("Customer")
+                .AllowEditing(true)
+                .Alignment(HorizontalAlignment.Center).Lookup(lookup => lookup
+                             .DataSource(d => d.WebApi().Controller("ManageMasterCustomer").Key("customer_id"))
+                              .DisplayExpr("customer_name")
+                              .ValueExpr("customer_id")
+                          )
+                .FormItem(f => f.Visible(true).Editor(e => e.SelectBox().Disabled(false).ReadOnly(false)));*/
+
+        columns.AddFor(m => m.prk_password).Caption("Password")
+        .AllowEditing(true)
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(true).Editor(e => e.TextBox().Disabled(false).ReadOnly(false)));
+
+        columns.AddFor(m => m.prk_email).Caption("Email")
+        .AllowEditing(true)
+        .ValidationRules(vr =>
+        {
+            vr.AddEmail().IgnoreEmptyValue(false);
+        })
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(true).IsRequired(true).Editor(e => e.TextBox().Disabled(false).ReadOnly(false)));
+
+        columns.AddFor(m => m.prk_id_divisi).Caption("Divisi").Alignment(HorizontalAlignment.Center)
+                                  .Lookup(lookup => lookup
+                                      .DataSource(d => d.StaticJson().Url("~/Content/json_data/Divisi.json").Key("ID_DIVISI"))
+                                      .DisplayExpr("Name")
+                                      .ValueExpr("ID_DIVISI")
+                                  )
+                                  .FormItem(i => i.Visible(true).Editor(e => e.SelectBox().SearchEnabled(false)));
+
+        columns.AddFor(m => m.prk_created_by).Caption("Create By")
+        .AllowEditing(false)
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(false).Editor(e => e.TextBox().Disabled(false)));
+
+        columns.AddFor(m => m.prk_created_date).Caption("Create Date")
+        .AllowEditing(false)
+        .Format("dd/MM/yyyy HH:mm a")
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(false).Editor(e => e.TextBox().Disabled(false)));
+
+        columns.AddFor(m => m.prk_modif_by).Caption("Modified By")
+        .AllowEditing(false)
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(false).Editor(e => e.TextBox().Disabled(false)));
+
+        columns.AddFor(m => m.prk_modif_date).Caption("Modified Date")
+        .AllowEditing(false)
+        .Format("dd/MM/yyyy HH:mm a")
+        .Alignment(HorizontalAlignment.Center)
+        .FormItem(f => f.Visible(false).Editor(e => e.TextBox().Disabled(false)));
+
+@*        columns.Add().Caption("ACTION")
+        .Width(120)
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
+            <a href="javascript:void(0);" onclick="$('#gridListUserRecruiter').dxDataGrid('instance').editRow(<%- rowIndex %>)" title="Edit">
+                <i class="fas fa-pen" style="color:#555; margin-right:10px;"></i>
+            </a>
+            <label class="switch">
+                <input type="checkbox" <%- data.is_active ? "checked" : "" %> onchange="onToggleStatus(<%- data.prk_id %>, this.checked)">
+                <span class="slider round"></span>
+            </label>
+            </text>);*@
+
+
+    })
+    .Paging(p => p.PageSize(10))
+    .Pager(pager =>
+    {
+        pager.Visible(true);
+        pager.DisplayMode(GridPagerDisplayMode.Full);
+        pager.ShowPageSizeSelector(true);
+        pager.AllowedPageSizes(new JS("[10, 50, 'all']"));
+        pager.ShowInfo(true);
+        pager.ShowNavigationButtons(true);
+    })
+   .Editing(editing =>
+   {
+       editing.Mode(GridEditMode.Row) // Ubah dari Form ke Popup
+           .Popup(p => p
+               .Title("Form User Recruiter")
+               .ShowTitle(true)
+               .Width(700)
+               .Height(500)
+           );
+       editing.AllowUpdating(true);
+       editing.AllowAdding(true);
+       editing.AllowDeleting(true);
+       editing.UseIcons(true);
+   })
+    .Selection(selection => selection.Mode(SelectionMode.Single))
+    //.OnEditingStart("customizeEditButtons")
+    //.OnSaving("onSaving")
+    .OnToolbarPreparing("onToolbarPreparing")
+    //.OnSaved("onDataSaved")
+    //.OnRowRemoving("onRowRemoving")
+    //.OnRowPrepared("OnRowPrepared_Test")
+    .OnEditorPreparing("onEditorPreparing")
+    //.OnCellPrepared("onCellPreparedDataGrid")
+    .SearchPanel(f => f.Visible(true))
+    .FilterRow(f => f.Visible(false))
+    .HeaderFilter(f => f.Visible(false).AllowSearch(false))
+    .RemoteOperations(true)
+    )
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container-fluid -->
+</div>
+<!-- content -->
+
+@section scripts
+{
+    <script src="~/Content/plugins/moment/moment.js"></script>
+
+    <script>
+     const datenow = new Date();
+
+
+     $(document).ready(function () {
+         document.getElementById("nav-view-listworkorder").click();
+         //document.getElementById("nav-view-createworkorder").click();
+     });
+
+     function onEditorPreparing(e) {
+         var visible = false;
+         if (e.dataField == "ref_id_cust") {
+             console.log(e);
+             const defaultValueChangeHandler = e.editorOptions.onValueChanged;
+             e.editorOptions.onValueChanged = function (args) {
+                 console.log(args);
+                 if (args.value != null) {
+                     //e.component.cellValue("user_npk", "TPL");
+                     var selectedRowIndex = e.component.getRowIndexByKey(e.row.key);
+                     var $link = '@Html.Raw(Url.Action("ManageMasterCustomer", "api", new { IDcus = "replacereq" }))';
+                     $link = $link.replace("replacereq", encodeURIComponent(args.value));
+
+                     $.ajax({
+                         type: "GET",
+                         url: $link,
+                         beforeSend: function () {
+
+                         },
+                         success: function (response) {
+                             console.log(response);
+                             if (response != null) {
+                                 var cust = response.customer_name;
+                                 console.log(cust);
+
+                                 e.component.cellValue(selectedRowIndex, "user_npk", cust.substring(0, 3)+"001");
+                                 e.component.cellValue(selectedRowIndex, "user_nama", cust);
+                                 e.component.cellValue(selectedRowIndex, "email", cust +"@@gs.astra.co.id");
+                             }
+                         },
+                         error: function (xhr, status, error) {
+                         }
+                     });
+                 }
+                 e.setValue(args.value);
+                 defaultValueChangeHandler(args);
+             }
+
+         }
+     }
+
+     function cell_numbering(cellElement, cellInfo) {
+         cellElement.text(cellInfo.rowIndex + 1);
+     }
+
+
+      function refreshTableListWorkOrder() {
+         let dataGrid = document.getElementById("gridListWorkOrder");
+         let instanceDataGrid = DevExpress.ui.dxDataGrid.getInstance(dataGrid);
+         var $link = '@Html.Raw(Url.Action("ManageMasterUser", "api"))';
+
+          instanceDataGrid.option('dataSource', DevExpress.data.AspNet.createStore({
+              key: "id_user",
+              loadUrl: $link,
+              insertUrl: $link,
+              updateUrl: $link,
+              deleteUrl: $link
+          }));
+
+     }
+
+     let refreshButton;
+
+    function onToolbarPreparing(e) {
+            var dataGrid = e.component;
+            e.toolbarOptions.items[0].showText = 'always';
+            e.toolbarOptions.items.push({
+                location: "after",
+                cssClass: "custom-toolbar-button",
+                widget: "dxButton",
+                options: {
+                    text: "Refresh",
+                    icon: "refresh",
+                    stylingMode: "contained",
+                    onClick: onRefreshBtnClick,
+                    onInitialized: function (e) {
+                        refreshButton = e.component;
+                    }
+                }
+            });
+    }
+
+
+     function onRefreshBtnClick() {
+         refreshTableListWorkOrder();
+     }
+
+
+    </script>
+
+
+}

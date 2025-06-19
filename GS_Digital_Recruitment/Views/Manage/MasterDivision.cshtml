@@ -1,0 +1,86 @@
+@{
+    ViewBag.Title = "Manage Master Customer";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-4">
+                    <h4 class="page-title">Manage Master Customer</h4>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="javascript:void(0);">Manage</a>
+                        </li>
+                        <li class="breadcrumb-item active">Master Customer</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                @(Html.DevExtreme().DataGrid()
+                    .ID("gridListCustomer")
+                    .DataSource(ds => ds.Mvc().LoadAction("GetCustomerData"))
+                    .Key("customer_id")
+                    .ShowBorders(true)
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnAutoWidth(true)
+                    .ColumnFixing(c => c.Enabled(true))
+                    .Scrolling(scrolling => scrolling.ColumnRenderingMode(GridColumnRenderingMode.Virtual))
+                    .ShowColumnLines(true)
+                    .RowAlternationEnabled(true)
+                    .ColumnChooser(c => c.Enabled(true).Mode(GridColumnChooserMode.Select))
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption("No")
+                            .AllowEditing(false)
+                            .Width(70)
+                            .CellTemplate("cell_numbering")
+                            .Alignment(HorizontalAlignment.Center);
+
+                        columns.Add().DataField("customer_name").Caption("Customer");
+                        columns.Add().DataField("country_id").Caption("Country");
+                        columns.Add().DataField("customer_batt_category").Caption("Battery Category");
+                        columns.Add().DataField("customer_periodic_price").Caption("Periodic Price");
+                        columns.Add().DataField("customer_status").Caption("Status");
+                        columns.Add().DataField("customer_createDate")
+                            .Caption("Create Date")
+                            .DataType(GridColumnDataType.Date)
+                            .Format("dd/MM/yyyy");
+                    })
+                    .Paging(p => p.PageSize(10))
+                    .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.ShowInfo(true);
+                        pager.ShowNavigationButtons(true);
+                        pager.ShowPageSizeSelector(true);
+                        pager.AllowedPageSizes(new[] { 10, 20, 50 });
+                    })
+                    .Editing(editing =>
+                    {
+                        editing.Mode(GridEditMode.Form);
+                        editing.AllowUpdating(true);
+                        editing.AllowAdding(true);
+                        editing.AllowDeleting(true);
+                        editing.UseIcons(true);
+                    })
+                    .SearchPanel(f => f.Visible(true))
+                    .FilterRow(f => f.Visible(true))
+                    .HeaderFilter(f => f.Visible(true).AllowSearch(true))
+                )
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function cell_numbering(cellElement, cellInfo) {
+            cellElement.text(cellInfo.rowIndex + 1);
+        }
+    </script>
+}
