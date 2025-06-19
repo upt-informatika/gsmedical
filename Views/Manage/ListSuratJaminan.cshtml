@@ -1,0 +1,570 @@
+@using GS_Digital_Recruitment.Models
+@{
+    ViewBag.Title = "Manage Surat Jaminan";
+}
+
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+        vertical-align: middle;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #E74C3C;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+
+    textarea, input {
+        /*min-inline-size: -moz-available, -webkit-fill-available;*/
+        min-inline-size: -webkit-fill-available;
+    }
+
+    .widget-container {
+        margin-right: 320px;
+    }
+
+    .content h4 {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 18px;
+    }
+
+    .content {
+        margin-top: 50px;
+        margin-left: 10px;
+    }
+
+    .selected-item {
+        margin-bottom: 20px;
+    }
+
+    .selected-patient {
+        cursor: pointer;
+    }
+
+    #selected-files {
+        display: none;
+    }
+
+    .options {
+        padding: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 260px;
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        margin-top: 10px;
+    }
+
+    .shadow-soft {
+        box-shadow: 5px 5px 5px rgba(217, 70, 53, 0.3);
+    }
+
+    .dx-datagrid {
+        border-radius: 0px;
+        padding: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .dx-datagrid-headers {
+        font-weight: 600;
+        color: #000000;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        background-color: #fafafa;
+    }
+
+    .dx-datagrid .dx-command-edit .dx-link {
+        display: none; /* hide default edit icons */
+    }
+
+    .dx-datagrid-rowsview .column_class {
+        text-align: left !important;
+    }
+
+    .dx-datagrid-rowsview .column_class_readonly {
+        text-align: left !important;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .dx-datagrid-rowsview .column_class_price {
+        text-align: right !important;
+    }
+
+    .horizontal-scrollable > .row {
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+        .horizontal-scrollable > .row > .col-4 {
+            display: inline-block;
+        }
+
+    .wrapper1 {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .topScrollTableLength {
+        display: block;
+    }
+
+    .dx-datagrid-rowsview .column_class {
+        text-align: left !important;
+    }
+
+    .custom-save-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .custom-cancel-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .custom-add-btn {
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    .custom-toolbar-button .dx-button {
+        background-color: #D94635 !important;
+        color: white !important;
+        border-radius: 10px !important;
+        border: none !important;
+    }
+
+        .custom-toolbar-button .dx-button .dx-icon {
+            color: white !important;
+        }
+
+        .custom-toolbar-button .dx-button .dx-button-text {
+            color: white !important;
+        }
+
+
+
+    .dx-popup .dx-toolbar .dx-link-save {
+        background-color: #28a745;
+        color: white;
+        border-radius: 4px;
+        padding: 5px 15px;
+    }
+
+    .dx-popup .dx-toolbar .dx-link-cancel {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 4px;
+        padding: 5px 15px;
+    }
+
+
+    .filter-bar {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 30px 10px 30px 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%
+        }
+
+    /* Optional: Responsive fallback */
+    @@media (max-width: 768px) {
+        .filter-bar {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .filter-bar {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        height: 130px;
+        display: flex;
+        background: white;
+    }
+
+        .card.orange {
+            background: linear-gradient(135deg, #FFA726, #FFCC80); /* Orange Gradient */
+        }
+
+        .card.green {
+            background: linear-gradient(135deg, #36C8E7, #5DEAF4); /* Green Gradient */
+        }
+
+        .card.red {
+            background: linear-gradient(135deg, #EF5350, #E57373); /* Red Gradient */
+        }
+
+        .card.purple {
+            background: linear-gradient(135deg, #BA68C8, #CE93D8); /* Purple Gradient */
+        }
+
+    .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        color: white;
+    }
+
+    .title {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.2;
+    }
+
+    .number {
+        font-size: 32px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .card-icon {
+        position: absolute;
+        bottom: 10px;
+        right: -20px;
+        width: auto;
+        height: 100%;
+        opacity: 0.9;
+    }
+</style>
+<div class="content">
+    <div class="filter-bar">
+        <div>
+            <p class="text-secondary mb-0">Mulai Tanggal</p>
+            <input id="tglAwal" type="date" />
+        </div>
+        <div>
+            <p class="text-secondary mb-0">Sampai Tanggal</p>
+            <input id="tglAkhir" type="date" />
+        </div>
+        <div>
+            <p class="text-secondary mb-0">Plant</p>
+            <select id="selPlant">
+                <option value="">Semua</option>
+                <!-- isi dinamis -->
+            </select>
+        </div>
+        <div>
+            <p class="text-secondary mb-0">Status</p>
+            <select id="selStatus">
+                <option value="">Semua</option>
+                <option value="Belum Diproses">Belum Diproses</option>
+                <option value="Disetujui">Disetujui</option>
+                <option value="Ditolak">Ditolak</option>
+            </select>
+        </div>
+        <div>
+            <p class="text-secondary mb-0">Jenis Jaminan</p>
+            <select id="selJenis">
+                <option value="">Semua</option>
+                <!-- isi dinamis -->
+            </select>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="card orange">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Belum Diproses</span>
+                    <span id="cntBelum" class="number">0</span>
+                </div>
+                <img src="~/Content/assets/images/cards/pengajuanBelumDiProses.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+        <div class="card green">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Disetujui</span>
+                    <span id="cntSetuju" class="number">0</span>
+                </div>
+                <img src="~/Content/assets/images/cards/pengajuanDisetujui.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+        <div class="card red">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Ditolak</span>
+                    <span id="cntTolak" class="number">0</span>
+                </div>
+                <img src="~/Content/assets/images/cards/PengajuanDitolak.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+        <div class="card purple">
+            <div class="card-content">
+                <div class="text">
+                    <span class="title">Total Pengajuan</span>
+                    <span id="cntTotal" class="number">0</span>
+                </div>
+                <img src="~/Content/assets/images/cards/totalPengajuan.png" alt="icon" class="card-icon">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Tabs -->
+                    <ul id="tablist2" class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="nav-view-listworkorder" data-toggle="tab" href="#view-listworkorder" onclick="refreshTableListWorkOrder()" role="tab">
+                                <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                <span class="d-none d-sm-block">Pengajuan Surat Jaminan</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content" id="tab-content1">
+                        <div class="tab-pane fade show active p-3" id="view-listworkorder" role="tabpanel" aria-labelledby="nav-view-listworkorder">
+                            <div class="">
+                                
+
+                                <div class="card-body shadow-soft">
+
+
+                                    @(
+                                    Html.DevExtreme().DataGrid<GS_Digital_Recruitment.Models.TransaksiSuratJaminan>()
+                                        .ID("gridSuratJaminan")
+                                        .DataSource(d => d.WebApi()
+                                            .Controller("SuratJaminan")
+                                            .Key("psj_id")
+                                            .LoadAction("Get")
+                                            .InsertAction("Post")
+                                            .UpdateAction("Put")
+                                            .DeleteAction("Delete")
+                                            .OnBeforeSend("gridOnBeforeSend")
+                                        )
+                                         .AllowColumnReordering(true)
+                                         .AllowColumnResizing(true)
+                                         .ColumnAutoWidth(true)
+                                         .ColumnFixing(c => c.Enabled(true))
+                                        .Scrolling(scrolling => scrolling.ColumnRenderingMode(GridColumnRenderingMode.Virtual))
+                                        .RemoteOperations(true)
+                                        .SearchPanel(sp => sp.Visible(true).HighlightCaseSensitive(true))
+                                        .FilterRow(fr => fr.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
+                                        .HeaderFilter(hf => hf.Visible(true))
+                                        .ColumnChooser(cc => cc.Enabled(true).Mode(GridColumnChooserMode.Select))
+                                        .OnExporting("onExporting")
+                                        .Columns(columns =>
+                                        {
+                                            columns.AddFor(m => m.psj_npk).Caption("NPK");
+                                            columns.AddFor(m => m.psj_nama_pasien).Caption("Nama Pasien");
+                                            columns.AddFor(m => m.psj_tanggal_pengajuan).Caption("Tgl Pengajuan").Format("dd/MM/yyyy");
+                                            columns.AddFor(m => m.psj_jenis_surat_jaminan).Caption("Jenis Jaminan");
+                                            columns.AddFor(m => m.psj_tanggal_berobat).Caption("Tgl Berobat").Format("dd/MM/yyyy");
+                                            columns.AddFor(m => m.psj_keterangan).Caption("Keterangan");
+                                            columns.AddFor(m => m.psj_status).Caption("Status");
+                                            columns.AddFor(m => m.psj_created_by).Caption("Created By").AllowEditing(false);
+                                            columns.AddFor(m => m.psj_created_date).Caption("Created Date").Format("dd/MM/yyyy HH:mm");
+                                            columns.AddFor(m => m.psj_modif_by).Caption("Modified By").AllowEditing(false);
+                                            columns.AddFor(m => m.psj_modif_date).Caption("Modified Date").Format("dd/MM/yyyy HH:mm");
+                                        })
+                                        .Paging(p => p.PageSize(10))
+                                            .Pager(pager =>
+                                            {
+                                                pager.Visible(true);
+                                                pager.DisplayMode(GridPagerDisplayMode.Full);
+                                                pager.ShowPageSizeSelector(true);
+                                                pager.AllowedPageSizes(new JS("[10, 50, 'all']"));
+                                                pager.ShowInfo(true);
+                                                pager.ShowNavigationButtons(true);
+                                            })
+                                        .Editing(edit =>
+                                        {
+                                            edit.Mode(GridEditMode.Popup)
+                                                .AllowAdding(true)
+                                                .AllowUpdating(true)
+                                                .AllowDeleting(true)
+                                                .UseIcons(true)
+                                                .Popup(popup => popup
+                                                    .Title("Form Surat Jaminan")
+                                                    .Width(700)
+                                                    .Height(500)
+                                                );
+                                        })
+
+                                )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End tab content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content -->
+
+@section scripts {
+    <script src="~/Content/plugins/moment/moment.js"></script>
+    <script>
+        function gridOnBeforeSend(method, ajaxOptions) {
+            if (method === "load") {
+                ajaxOptions.data.tglAwal = $("#tglAwal").val();
+                ajaxOptions.data.tglAkhir = $("#tglAkhir").val();
+                ajaxOptions.data.plant = $("#selPlant").val();
+                ajaxOptions.data.status = $("#selStatus").val();
+                ajaxOptions.data.jenis = $("#selJenis").val();
+            }
+        }
+
+        function refreshGridAndStats() {
+            const grid = $("#gridSuratJaminan").dxDataGrid("instance");
+            const params = {
+                tglAwal: $("#tglAwal").val(),
+                tglAkhir: $("#tglAkhir").val(),
+                plant: $("#selPlant").val(),
+                status: $("#selStatus").val(),
+                jenis: $("#selJenis").val()
+            };
+            grid.refresh();
+            updateStats(params);
+        }
+
+        async function updateStats(params) {
+            try {
+                const resp = await fetch("api/SuratJaminan/Stats?" + new URLSearchParams(params));
+                if (!resp.ok) throw new Error("Gagal mengambil statistik");
+                const data = await resp.json();
+
+                $("#cntBelum").text(data.belumDiproses ?? 0);
+                $("#cntSetuju").text(data.disetujui ?? 0);
+                $("#cntTolak").text(data.ditolak ?? 0);
+                $("#cntTotal").text(data.total ?? 0);
+            } catch (err) {
+                console.error("Statistik error:", err);
+                $("#cntBelum, #cntSetuju, #cntTolak, #cntTotal").text("0");
+            }
+        }
+
+        $(function () {
+            // Auto filter saat field berubah
+            $("#tglAwal, #tglAkhir, #selPlant, #selStatus, #selJenis").on("change", refreshGridAndStats);
+
+            // Load pilihan plant dan jenis jaminan
+            fetch("api/SuratJaminan/Options")
+                .then(r => r.json())
+                .then(opt => {
+                    opt.plants.forEach(p => $("#selPlant").append(`<option>${p}</option>`));
+                    opt.jenis.forEach(j => $("#selJenis").append(`<option>${j}</option>`));
+                });
+
+            // Load awal
+            refreshGridAndStats();
+        });
+    </script>
+    <script>
+        function onExporting(e) {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Data Surat Jaminan');
+
+            DevExpress.excelExporter.exportDataGrid({
+                component: e.component,
+                worksheet: worksheet,
+                autoFilterEnabled: true
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: "application/octet-stream" }), "DataSuratJaminan.xlsx");
+                });
+            });
+            e.cancel = true;
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+}

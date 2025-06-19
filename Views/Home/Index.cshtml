@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Dashboard Admin";
+}
+<style>
+    .input-custom {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-width: 100%;
+    }
+
+    .welcome-box {
+        background-color: #E8F1FF;
+        border-radius: 20px;
+        padding: 2rem;
+    }
+
+    .welcome-image {
+        max-height: 200px;
+        width: 100%;
+        object-fit: contain;
+    }
+</style>
+
+<div class="container-fluid p-0">
+    <div class="row mb-4 m-2 welcome-box align-items-center">
+        <!-- Teks -->
+        <div class="col-lg-8 col-md-6 col-sm-12 order-2 order-md-1">
+            <div class="me-4">
+                <h4 class="mb-2 text-dark">Hai, Admin Medcare!</h4>
+                <p class="text-secondary mb-0" style="font-size: 15px;">
+                    Mari kita kelola data kesehatan dengan efisien. Pantau pengajuan, periksa data rumah sakit, dan
+                    pastikan setiap klaim tertangani dengan cepat dan tepat.
+                </p>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-lg-4 col-md-12 mb-2">
+                    <p class="text-secondary mb-0" style="font-size: 15px;">Plant</p>
+                    <select class="input-custom"><option>Semua</option></select>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-2">
+                    <p class="text-secondary mb-0" style="font-size: 15px;">Dari Tanggal</p>
+                    <input class="input-custom" type="date" />
+                </div>
+                <div class="col-lg-4 col-md-12 mb-2">
+                    <p class="text-secondary mb-0" style="font-size: 15px;">Sampai Tanggal</p>
+                    <input class="input-custom" type="date" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Gambar -->
+        <div class="col-lg-4 col-md-6 col-sm-12 text-center order-1 order-md-2">
+            <img src="~/Content/assets/images/admin-pr-lk.png" alt="Admin Illustration" class="welcome-image">
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,323 @@
+@{
+    ViewBag.Title = "Signup";
+}
+
+<!-- Begin page -->
+
+<div style="position: relative; min-height:90vh; max-height: 95vh; width: 100%; overflow: hidden;" class="d-flex justify-content-center">
+
+
+
+    <!-- Wrapper for background and login card -->
+    <div class="modal fade" id="modal-message" style="margin:auto;" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel2" style="text-align:center;font-size:17px;">Informasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row col-12" style="margin:auto;">
+                                <h6 class="modal-title mt-0" id="text-message" style="text-align:center;font-size:16px;font-weight:bold;"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Background image -->
+    <img sizes="(max-width: 575px) 100vw, (max-width: 767px) 50vw, (max-width: 991px) 33vw, 25vw"
+         loading="lazy"
+         class="d-block w-100 h-100 blur-load blur-load-loaded"
+         src="~/Content/assets/images/gallery/image-1.jpg"
+         alt="Building"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" />
+
+    <div class="position-absolute w-100 h-100"
+         style="top: 0; left: 0; background-color: rgba(0, 0, 0, 0.1); z-index: 1;">
+    </div>
+
+    <!-- Login Card Centered -->
+    <div class="row ms-lg-5 me-lg-5 ps-lg-5 pe-lg-5 align-items-center" style="z-index: 2;">
+        <div class="col-lg-8">
+            <div class="d-flex flex-column justify-content-center align-items-center text-start px-3 text-white">
+                <h1 class="display-1 fw-bold">“Join Us and Grow Together”</h1>
+                <h5 class="lead fw-lighter">At our core, we believe that success is best achieved through shared growth. When you join us, you become part of a supportive environment where your ideas matter and your development is prioritized</h5>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card rounded p-3">
+
+                <div class="card-body mb-3">
+                    <div class="mb-5 mt-3">
+                        <h4 class="fs-4 fw-bold mb-0">Welcome to GS Battery Career</h4>
+                        <p class="fw-lighter text-secondary">Create an account to apply for the available positions</p>
+                    </div>
+
+                    <!-- Form -->
+                    @(Html.DevExtreme().Form()
+                        .ID("formInputSchedule")
+                        .ColCount(1)
+                        .ScrollingEnabled(true)
+                        .LabelLocation(FormLabelLocation.Top)
+                        .MinColWidth(300)
+                        .ReadOnly(false)
+                        .ShowColonAfterLabel(false)
+                        .Items(items =>
+                        {
+                            items.AddSimple().IsRequired(true).Editor(e => e
+                                .TextBox()
+                                .Placeholder("Enter your name")
+                                .ElementAttr("class", "form-control-lg")
+                                .ReadOnly(false)
+                                .ID("fullname")).ColSpan(1);
+
+                            items.AddSimple().IsRequired(true).Editor(e => e
+                                .NumberBox()
+                                .Placeholder("Enter your National ID")
+                                .ElementAttr("class", "form-control")
+                                .ReadOnly(false)
+                                .ID("nik")).ColSpan(1);
+
+                            items.AddSimple().IsRequired(true).Editor(e => e
+                                .TextBox()
+                                .Placeholder("Enter your username")
+                                .ElementAttr("class", "form-control")
+                                .ReadOnly(false)
+                                .ID("username")).ColSpan(1);
+
+                            items.AddSimple().IsRequired(true).Editor(e => e
+                                .TextBox()
+                                .Placeholder("Enter your password")
+                                .Mode(TextBoxMode.Password)
+                                .ElementAttr("class", "form-control")
+                                .ReadOnly(false)
+                                .ID("password")).ColSpan(1);
+
+                            items.AddSimple().IsRequired(true).Editor(e => e
+                                .TextBox()
+                                .Placeholder("Confirm your password")
+                                .Mode(TextBoxMode.Password)
+                                .ElementAttr("class", "form-control")
+                                .ReadOnly(false)
+                                .ID("password")).ColSpan(1);
+
+                            items.AddButton()
+                                .Name("Signup")
+                                .Visible(true)
+                                .ButtonOptions(b => b
+                                    .Text("Create an account")
+                                    .ID("btn_signup")
+                                    .Type(ButtonType.Danger)
+                                    .UseSubmitBehavior(true)
+                                    .ElementAttr("class", "btn btn-danger w-100 rounded mt-3"))
+                                .ColSpan(1); // spans full width// spans full width
+                        })
+                    )
+                    <p class="mt-2 fw-light text-secondary text-center">Already have an account? <a class="fw-bold text-decoration-none" href="@Url.Action("Index", "Login")">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end wrapper-page -->
+
+@section scripts{
+    <script>
+
+        var urlToOrder = false;
+        var urlIDOrder = "";
+
+        $(document).ready(function () {
+            //document.getElementById("btn_login").click();
+            if (location.search != null) {
+                var myParam = location.search.split('order=')[1];
+                if (myParam != "" && myParam != undefined) {
+                    urlToOrder = true;
+                    urlIDOrder = myParam;
+                } else {
+                    urlToOrder = false;
+                    urlIDOrder = "";
+                }
+            }
+
+        });
+
+
+        !function ($) {
+            "use strict";
+
+            var SweetAlert = function () {
+            };
+
+
+            var passwordSubmit = document.getElementById("userpassword");
+
+            //examples
+            SweetAlert.prototype.init = function () {
+
+                passwordSubmit.addEventListener("keyup", function (event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        document.getElementById("btn_login").click();
+                    }
+                });
+
+                $('#btn_login').click(function () {
+
+                    if ($('#username').val() == "") {
+                        $('#modal-message').modal('show');
+                        $('#text-message').html("Username masih kosong. Harap untuk mengisi dan mencoba kembali!");
+                        setTimeout(() => {
+                            $('#modal-message').modal('hide');
+                        }, 2000);
+                        return;
+                    }
+
+                    if ($('#userpassword').val() == "") {
+                        $('#modal-message').modal('show');
+                        $('#text-message').html("Password masih kosong. Harap untuk mengisi dan mencoba kembali!");
+                        setTimeout(() => {
+                            $('#modal-message').modal('hide');
+                        }, 2000);
+                        return;
+                    }
+
+                    if ($('#usertype').val() == "") {
+                        $('#modal-message').modal('show');
+                        $('#text-message').html("User Type masih kosong. Harap untuk mengisi dan mencoba kembali!");
+                        setTimeout(() => {
+                            $('#modal-message').modal('hide');
+                        }, 2000);
+                        return;
+                    }
+
+                    if ($('#userplant').val() == "") {
+                        $('#modal-message').modal('show');
+                        $('#text-message').html("Plant masih kosong. Harap untuk mengisi dan mencoba kembali!");
+                        setTimeout(() => {
+                            $('#modal-message').modal('hide');
+                        }, 2000);
+                        return;
+                    }
+
+                    if ($('#userdepartment').val() == "") {
+                        $('#modal-message').modal('show');
+                        $('#text-message').html("Department masih kosong. Harap untuk mengisi dan mencoba kembali!");
+                        setTimeout(() => {
+                            $('#modal-message').modal('hide');
+                        }, 2000);
+                        return;
+                    }
+
+                    if ($('#username').val != "" && $('#userpassword').val != "" && $('#usertype').val != "" && $('#userplant').val != "" && $('#userdepartment').val != "") {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("PostLogin", "Login")',
+                            data: {
+                                username: $('#username').val(),
+                                userpass: $('#userpassword').val(),
+                                usertype: $('#usertype').val(),
+                                userplant: $('#userplant').val(),
+                                userdepartment: $('#userdepartment').val(),
+                            },
+                            beforeSend: function () {
+                                Swal.showLoading()
+                            },
+                            success: function (response) {
+                                Swal.DismissReason.cancel
+                                console.log(response);
+                                if (response.status_code == 200 && response.status) {
+                                    $('#username').val("");
+                                    $('#userpassword').val("");
+
+                                    Swal.fire(
+                                        {
+                                            title: 'Complete!',
+                                            text: 'Login Success!',
+                                            type: 'success',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#626ed4',
+                                            cancelButtonColor: "#ec4561"
+                                        }
+                                    )
+
+                                    var $link = '@Html.Raw(Url.Action("ListManageOrder", "Manage", new { order = "replaceID" }))';
+                                    $link = $link.replace("replaceID", encodeURIComponent(urlIDOrder));
+
+                                    if (urlToOrder == true && urlIDOrder != undefined) {
+                                        window.location.href = $link;
+                                    } else {
+                                        window.location.pathname = '@Url.Action("Index", "Home")';
+                                    }
+
+
+                                    //window.location.pathname = "/marketing/Home/";
+                                }
+                                else if (response.status_code == 404) {
+                                    Swal.fire(
+                                        {
+                                            title: 'Failed!',
+                                            text: 'Account not found! \n Username/Password incorrect. \n Please check again!',
+                                            type: 'error',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#626ed4',
+                                            cancelButtonColor: "#ec4561"
+                                        }
+                                    )
+                                }
+                                else if (response.status_code == 403) {
+                                    Swal.fire(
+                                        {
+                                            title: 'Failed!',
+                                            text: 'Account is not active! \n Please contact Administrator (IT)!',
+                                            type: 'warning',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#626ed4',
+                                            cancelButtonColor: "#ec4561"
+                                        }
+                                    )
+                                }
+                                else {
+                                    Swal.fire(
+                                        {
+                                            title: 'Failed!',
+                                            text: 'Failed to Login',
+                                            type: 'warning',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#626ed4',
+                                            cancelButtonColor: "#ec4561"
+                                        }
+                                    )
+                                }
+
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.DismissReason.cancel
+                                console.log(error);
+                            }
+                        });
+                    }
+                });
+
+            },
+                //init
+                $.SweetAlert = new SweetAlert, $.SweetAlert.Constructor = SweetAlert
+        }(window.jQuery),
+
+            //initializing
+            function ($) {
+                "use strict";
+                $.SweetAlert.init()
+            }(window.jQuery);
+
+    </script>
+
+}

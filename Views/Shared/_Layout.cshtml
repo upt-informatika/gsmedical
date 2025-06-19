@@ -1,0 +1,219 @@
+﻿
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="dashboardmarketingportal">
+    <meta name="author" content="muhammadfauzimilad">
+
+    <title>Template Portal DevExpress by MFM</title>
+    <link rel="shortcut icon" href="~/Content/images-new/logo_gs_battery_nonbg.ico">
+
+
+    <!-- Sweet Alert -->
+    <link href="~/Content/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- datepicker -->
+    <link href="~/Content/plugins2/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+
+    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/assets/css/metismenu.min.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/assets/css/styleR.css" rel="stylesheet" type="text/css">
+
+    <script src="~/Content/plugins/devexpress-download/polyfill.min.js"></script>
+    <script src="~/Content/plugins/devexpress-download/exceljs.min.js"></script>
+    <script src="~/Content/plugins/devexpress-download/FileSaver.min.js"></script>
+
+
+
+    @* Uncomment to use the HtmlEditor control *@
+    @* <script src="https://unpkg.com/devextreme-quill/dist/dx-quill.min.js"></script> *@
+
+    @Styles.Render("~/Content/bundle")
+    @Styles.Render("~/Content/DevExtremeBundle")
+    @Scripts.Render("~/Scripts/DevExtremeBundle")
+
+
+
+</head>
+
+<body>
+    <div style="padding: 10px; background-color:#4266CE; height: 100vh; overflow: hidden;">
+
+        <div id="wrapper">
+            <!-- Top Bar Start -->
+            <div class="topbar">
+
+                <!-- LOGO -->
+                <div class="topbar-left pt-3">
+                    <a href="@Url.Action("IndexAdmin", "Manage")" class="logo">
+                        <span class="logo-light">
+                            <img src="~/Content/assets/images/logo_gs_medcare.png" alt="" height="50">
+                        </span>
+                        <span class="logo-sm">
+                            <img src="~/Content/assets/images/logo_gs.png" alt="" height="35">
+                        </span>
+
+                    </a>
+                </div>
+
+
+
+            </div>
+
+
+            <!-- Top Bar End -->
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="left side-menu" style="position: relative;">
+                <!-- Tombol Toggle Sidebar di kanan atas -->
+                <button class="button-menu-mobile open-left waves-effect" style="position: absolute; top: -50px; right: -40px; z-index: 10000; border-radius: 50px">
+                    <i class="mdi mdi-menu"></i>
+                </button>
+
+                <div class="slimscroll-menu" id="remove-scroll">
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <!-- Left Menu Start -->
+                        <ul class="metismenu" id="side-menu">
+
+                            <li>
+                                <a href="@Url.Action("IndexAdmin", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-pie-chart"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Dashboard </span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("ListSuratJaminan", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-file"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Surat Jaminan  </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("MasterUserRecruiter", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-calendar"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Invoicing RS/Klinik </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ListManageForecast", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-bookmark-alt"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Klaim Karyawan </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ListManage", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-stats-up"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Medical Check Up </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ListManageOrder", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-file"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Laporan </span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("ListManagePriceSimulation", "Manage")" class="waves-effect" style="text-decoration: none;">
+                                    <i class="ti-settings"></i><span class="badge badge-primary badge-pill float-right"></span> <span> Pengaturan </span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                    <div class="clearfix"></div>
+                </div>
+                <!-- Sidebar -left -->
+            </div>
+            <!-- Left Sidebar End -->
+
+
+            <div class="content-page" style="margin-top:-380px;">
+                <div class="container-fluid bg-white rounded-3 p-3" style="height: 95vh; width: 99%; margin-left:0px; position: relative;">
+                    <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding: 12px 24px; margin-bottom: 1rem;">
+                        <!-- Brand -->
+                        <div style="font-weight: bold; font-size: 1.25rem; color: #343a40;">PT. GS BATTERY</div>
+
+                        <!-- Right side -->
+                        <div style="display: flex; align-items: center; gap: 24px;">
+                            <!-- Fullscreen Icon -->
+                            <div style="height: 40px; border-left: 1px solid #ddd;"></div>
+                            <a href="#" id="btn-fullscreen" style="color: #6c757d; padding: 0 8px; text-decoration: none;">
+                                <i class="mdi mdi-fullscreen noti-icon" style="font-size: 30px;"></i>
+                            </a>
+
+                            <!-- Notification Icon (optional/hidden) -->
+                            <div style="height: 40px; border-left: 1px solid #ddd;"></div>
+                            <div style="padding: 0 8px;">
+                                <i class="mdi mdi-bell-outline noti-icon" style="font-size: 30px; color: #6c757d; position: relative;">
+                                    <span style="position: absolute; top: -4px; right: -4px; background: red; color: white; font-size: 10px; border-radius: 50%; padding: 2px 6px;">3</span>
+                                </i>
+                            </div>
+
+                            <!-- Profile -->
+                            <div style="height: 40px; border-left: 1px solid #ddd;"></div>
+                            <div style="display: flex; align-items: center; padding-left: 8px; position: relative;">
+                                <a href="#" style="display: flex; align-items: center; text-decoration: none; color: inherit;" data-toggle="dropdown">
+                                    <img src="~/Content/images-new/users/profile.jpg" alt="user" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 8px;">
+                                    @*  <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                                        <span style="font-weight: 600; font-size: 12px;">Admin</span>
+                                        <span style="color: #6c757d; font-size: 12px;">Admin MedCare</span>
+                                    </div> *@
+                                </a>
+                                <!-- Dropdown (assumes Bootstrap JS still in use for functionality) -->
+                                <div class="dropdown-menu dropdown-menu-right profile-dropdown" style="margin-top: 8px; right: 0; left: auto;">
+                                    <a class="dropdown-item" href="@Url.Action("Index", "ChangePassword")">
+                                        <i class="mdi mdi-lock m-r-5"></i> Change Password
+                                    </a>
+                                    <a class="dropdown-item" href="@Url.Action("Index2", "ChangePassword")">
+                                        <i class="mdi mdi-lock m-r-5"></i> Change Password
+                                    </a>
+                                    <a class="dropdown-item text-success">
+                                        <i class="mdi mdi-account text-success"></i>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Login")">
+                                        <i class="mdi mdi-power text-danger"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+
+
+
+
+
+
+                    <div style="overflow-y: auto; height: calc(100% - 100px); padding-right: 10px;">
+                        @RenderBody()
+
+                        <!-- taruh ini DI SINI, BUKAN DI <head> -->
+                        @RenderSection("scripts", required: false)
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <script src="~/Content/assets/js/jquery.min.js"></script>
+    <script src="~/Content/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/assets/js/metismenu.min.js"></script>
+    <script src="~/Content/assets/js/jquery.slimscroll.js"></script>
+    <script src="~/Content/assets/js/waves.min.js"></script>
+
+
+    <!-- datepicker -->
+    <script src="~/Content/plugins2/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+
+
+    <script src="~/Content/assets/js/app.js"></script>
+</body>
+
+</html>
